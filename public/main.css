@@ -1,0 +1,43 @@
+body {
+  background-color: #CFB87C;
+}
+
+h3 {
+  display: inline;
+}
+
+hr {
+  margin: 10px;
+}
+
+label {
+  margin: 0px 10px;
+}
+
+ul {
+  margin-bottom: 0 !important;
+}
+
+#email-info {
+  margin: 10px 20px;
+}
+
+#export-button {
+  margin: 0 0 10px 30px;
+}
+
+.export-checkbox {
+  margin-right: 10px !important;
+}
+
+.float-right {
+  float: right;
+}
+
+.form-group {
+  margin: 0 1%;
+}
+
+.course-info, .course-info > a {
+  margin-left:28px;
+}

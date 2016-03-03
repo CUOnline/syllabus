@@ -1,0 +1,36 @@
+div.row
+  form.form-inline action="#{mount_point}" method='POST'
+
+    div.form-group
+      label for='search-term' Search Term
+      input[
+        class='form-control' type='text' name='search-term'
+        id='search-term' value="#{params['search-term']}" ]
+
+    div.form-group
+      label for='department' Department
+      select id='department' name='department'
+        - settings.departments.each do |department|
+          option value="#{ department }" selected=("selected" if \
+            department == params['department']) #{ department }
+
+    div.form-group
+      label for='enrollment-term' Term
+      select id='enrollment-term' name='enrollment-term'
+        - settings.enrollment_terms.each do |id, name|
+          option value='#{ id }' selected=('selected' if \
+            id == params['enrollment-term']) #{ name }
+
+    div.form-group
+      input type='submit'
+
+  hr
+
+  div#email-info
+    - if session['user_email']
+      | Report will be sent to #{session['user_email']}
+    - else
+      | Unable to retreive email address for sending report. Try updating your contact email
+      a href='https://ucdenver.instructure.com/profile/settings' here
+      | , then logging in again
+    a.float-right href='/auth/logout' Log Out

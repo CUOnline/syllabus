@@ -1,0 +1,24 @@
+== slim :_search
+
+div
+  form action='export' method='POST'
+    div.form-group
+      - if @results.any?
+        input#select-all type='checkbox'
+        label for='select-all' Select All
+        input#export-button type='submit' value='Export Selected'
+      div class=('float-right' if @results.any?) #{@results.count} results
+
+    ul.list-group
+      - @results.each do |result|
+        li.list-group-item
+          input.export-checkbox [ name='export_ids[]' value='#{result["id"]}'
+                                  type='checkbox' ]
+          h3 #{result["name"]}
+
+          br
+
+          span.course-info
+            = result['code']
+            br
+            a href='view/#{ result["id"] }' target='_blank' View Syllabus
