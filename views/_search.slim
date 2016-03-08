@@ -30,7 +30,7 @@ div.row
     - if session['user_email']
       | Report will be sent to #{session['user_email']}
     - else
-      | Unable to retreive email address for sending report. Try updating your contact email
+      | Unable to retreive email address for sending report. Try updating your contact email 
       a href='https://ucdenver.instructure.com/profile/settings' here
       | , then logging in again
     a.float-right href='/auth/logout' Log Out
