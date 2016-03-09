@@ -10,3 +10,6 @@ settings.yml
 
 # Debugger command history
 .byebug_history
+
+# Redis dump
+dump.rdb
