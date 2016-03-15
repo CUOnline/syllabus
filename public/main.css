@@ -1,7 +1,3 @@
-body {
-  background-color: #CFB87C;
-}
-
 h3 {
   display: inline;
 }
@@ -26,6 +22,10 @@ ul {
   margin: 0 0 10px 30px;
 }
 
+.course-info, .course-info > a {
+  margin-left:28px;
+}
+
 .export-checkbox {
   margin-right: 10px !important;
 }
@@ -36,8 +36,4 @@ ul {
 
 .form-group {
   margin: 0 1%;
-}
-
-.course-info, .course-info > a {
-  margin-left:28px;
 }
