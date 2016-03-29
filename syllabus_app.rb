@@ -1,6 +1,7 @@
+require 'bundler/setup'
 require 'wolf'
 
-class Syllabus < Wolf::Base
+class SyllabusApp < Wolf::Base
   set :title, 'Syllabus Exporter'
   set :root, File.dirname(__FILE__)
   set :enrollment_terms, self.get_enrollment_terms
