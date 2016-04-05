@@ -20,12 +20,11 @@ class SyllabusWorker
         course_code = SyllabusApp.redis.get("course:#{id}:course_code")
 
         if syllabus_body.nil? || course_code.nil?
-          url = "#{SyllabusApp.api_base}/courses/#{id}?include[]=syllabus_body"
-          auth_token = {Authorization: "Bearer #{SyllabusApp.canvas_token}"}
-          response = JSON.parse(RestClient.get(url, auth_token))
+          course = SyllabusApp.canvas_api(:get, "courses/#{id}?include[]=syllabus_body")
 
-          syllabus_body = response['syllabus_body']
-          course_code = response['course_code']
+          syllabus_body = course['syllabus_body']
+          course_code = course['course_code']
+
 
           SyllabusApp.redis.set("course:#{id}:syllabus_body", syllabus_body)
           SyllabusApp.redis.set("course:#{id}:course_code", course_code)

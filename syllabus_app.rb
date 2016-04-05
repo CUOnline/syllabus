@@ -15,14 +15,13 @@ class SyllabusApp < WolfCore::App
   end
 
   get '/view/:id' do
-    url = "#{settings.api_base}/courses/#{params['id']}?include[]=syllabus_body"
-    response = JSON.parse(RestClient.get(url, auth_header))
+    course = canvas_api(:get, "courses/#{params['id']}?include[]=syllabus_body")
 
-    if response['syllabus_body'].nil? || response['syllabus_body'].empty?
+    if course['syllabus_body'].nil? || course['syllabus_body'].empty?
       return 'Syllabus missing or empty'
     end
 
-    response['syllabus_body']
+    course['syllabus_body']
   end
 
   post '/' do
