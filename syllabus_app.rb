@@ -1,13 +1,14 @@
 require 'bundler/setup'
-require 'wolf'
+require 'wolf_core'
 
-class SyllabusApp < Wolf::Base
-  set :title, 'Syllabus Exporter'
+class SyllabusApp < WolfCore::App
   set :root, File.dirname(__FILE__)
-  set :enrollment_terms, self.get_enrollment_terms
   self.setup
 
-  use Wolf::AuthFilter
+  set :title, 'Syllabus Exporter'
+  set :enrollment_terms, self.get_enrollment_terms
+
+  use WolfCore::AuthFilter
 
   get '/' do
     slim :index
