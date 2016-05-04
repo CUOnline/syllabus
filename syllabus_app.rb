@@ -1,12 +1,12 @@
 require 'bundler/setup'
 require 'wolf_core'
+require './syllabus_worker'
 
 class SyllabusApp < WolfCore::App
   set :root, File.dirname(__FILE__)
   self.setup
 
   set :title, 'Syllabus Exporter'
-  set :enrollment_terms, self.get_enrollment_terms
 
   use WolfCore::AuthFilter
 
@@ -25,26 +25,18 @@ class SyllabusApp < WolfCore::App
   end
 
   post '/' do
-    cursor = settings.db.prepare(%{
+    query_string = %{
       SELECT distinct id, name, code
       FROM course_dim
       WHERE code LIKE ?
         AND name LIKE ?
         AND workflow_state != 'deleted'
-        AND enrollment_term_id = ?; })
+        AND enrollment_term_id = ?; }
 
-    begin
-      cursor.execute("%#{params['department']}%",
-                     "%#{params['search-term']}%",
-                     shard_id(params['enrollment-term']))
-      @results = []
-
-      while row = cursor.fetch_hash
-        @results << row
-      end
-    ensure
-      cursor.finish
-    end
+    @results = canvas_data(query_string,
+                          "%#{params['department']}%",
+                          "%#{params['search-term']}%",
+                          shard_id(params['enrollment-term']))
 
     slim :results
   end
