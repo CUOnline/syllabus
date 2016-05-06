@@ -1,5 +1,6 @@
 require 'bundler/setup'
 require 'wolf_core'
+require 'wolf_core/auth'
 require './syllabus_worker'
 
 class SyllabusApp < WolfCore::App
@@ -7,8 +8,6 @@ class SyllabusApp < WolfCore::App
   self.setup
 
   set :title, 'Syllabus Exporter'
-
-  use WolfCore::AuthFilter
 
   get '/' do
     slim :index

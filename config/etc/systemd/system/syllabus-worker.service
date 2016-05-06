@@ -1,0 +1,15 @@
+[Unit]
+Description=Syllabus Exporter
+Wants=redis.service
+After=redis.service
+Wants=redis_6379.service
+After=redis_6379.service
+
+[Service]
+WorkingDirectory=/var/www/syllabus/current
+ExecStart=/bin/bash -lc 'bundle exec rake resque:work QUEUE=syllabus'
+Restart=always
+KillMode=process
+
+[Install]
+WantedBy=default.target
