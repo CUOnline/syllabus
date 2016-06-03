@@ -8,7 +8,7 @@ class SyllabusWorker
   def self.perform(params)
     syllabus_files = []
 
-    export_path = File.join('tmp', 'syllabus.zip')
+    export_path = File.join(SyllabusApp.tmp_dir, 'syllabus.zip')
     File.delete(export_path) if File.exists?(export_path)
 
     # Generate zipfile of syllabi html docs
@@ -30,10 +30,10 @@ class SyllabusWorker
           SyllabusApp.redis.set("course:#{id}:course_code", course_code)
         end
 
-        next if syllabus_body.empty?
+        next if syllabus_body.nil? || syllabus_body.empty?
 
         filename = "#{course_code}-#{id}".gsub(/[\/\ ]/, '-')
-        Tempfile.open([filename, '.html'], 'tmp') do |file|
+        Tempfile.open([filename, '.html'], SyllabusApp.tmp_dir) do |file|
           file.write('<meta charset="utf-8">')
           file.write(syllabus_body)
 
