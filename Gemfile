@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 gem 'wolf_core', :git => 'https://github.com/cuonline/wolf_core'
-gem "rubyzip", "~> 1.1", {:require=>"zip"}
+gem "rubyzip", '~> 1.1', :require=>'zip'
 
 group :test, :deveopment do
   gem 'byebug', '~> 8.2'
