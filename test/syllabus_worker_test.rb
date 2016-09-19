@@ -6,9 +6,11 @@ class SyllabusWorkerTest < Minitest::Test
     app.set :tmp_dir, @tmp_dir
 
     @zip_file = File.join(@tmp_dir, 'syllabus.zip')
-    SyllabusApp.set(:tmp_dir, @tmp_dir)
+    SyllabusApp.settings.stubs(:tmp_dir).returns(@tmp_dir)
 
     Mail::Message.any_instance.expects(:deliver!)
+
+    super
   end
 
   def teardown
@@ -23,8 +25,12 @@ class SyllabusWorkerTest < Minitest::Test
       {'syllabus_body' => 'Do your assignments!', 'course_code' => 'COSC125'}
     ]
 
-    SyllabusApp.expects(:canvas_api).times(export_ids.length).returns(*export_courses)
-    Redis.any_instance.expects(:get).times(export_ids.length * 2).returns(nil)
+    export_courses.each_with_index do |response, i|
+      stub_request(:get, /courses\/#{export_ids[i]}\?access_token=.+&include\[\]=syllabus_body/)
+        .to_return(:body => response.to_json, :headers => {'Content-Type' => 'application/json'})
+    end
+
+    Redis.any_instance.stubs(:get).returns(nil)
     export_ids.each_with_index do |id, i|
       Redis.any_instance.expects(:set).with("course:#{id}:syllabus_body", export_courses[i]['syllabus_body'])
       Redis.any_instance.expects(:set).with("course:#{id}:course_code", export_courses[i]['course_code'])
@@ -54,8 +60,6 @@ class SyllabusWorkerTest < Minitest::Test
       {'syllabus_body' => 'Do your assignments!', 'course_code' => 'COSC125'}
     ]
 
-    SyllabusApp.expects(:canvas_api).never
-
     export_ids.each_with_index do |id, i|
       Redis.any_instance.expects(:get).with("course:#{id}:syllabus_body")
                                       .returns(export_courses[i]['syllabus_body'])
@@ -76,8 +80,9 @@ class SyllabusWorkerTest < Minitest::Test
         assert_match /#{export_courses[i]['syllabus_body']}/, body
       end
     end
-  end
 
+    assert_not_requested :get, /.*/
+  end
 
   def test_perform_with_empty_syllabus
     export_ids = ['1', '2', '3']
@@ -87,7 +92,11 @@ class SyllabusWorkerTest < Minitest::Test
       {'syllabus_body' => '', 'course_code' => 'COSC125'}
     ]
 
-    SyllabusApp.expects(:canvas_api).times(export_ids.length).returns(*export_courses)
+    export_courses.each_with_index do |response, i|
+      stub_request(:get, /courses\/#{export_ids[i]}\?access_token=.+&include\[\]=syllabus_body/)
+        .to_return(:body => response.to_json, :headers => {'Content-Type' => 'application/json'})
+    end
+
     Redis.any_instance.stubs(:get).returns(nil)
     Redis.any_instance.stubs(:set)
 

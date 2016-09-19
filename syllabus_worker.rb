@@ -20,7 +20,7 @@ class SyllabusWorker
         course_code = SyllabusApp.redis.get("course:#{id}:course_code")
 
         if syllabus_body.nil? || course_code.nil?
-          course = SyllabusApp.canvas_api(:get, "courses/#{id}?include[]=syllabus_body")
+          course = SyllabusApp.canvas_api.get("courses/#{id}?include[]=syllabus_body").body
 
           syllabus_body = course['syllabus_body']
           course_code = course['course_code']

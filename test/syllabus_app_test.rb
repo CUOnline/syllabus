@@ -2,17 +2,40 @@ require_relative './test_helper'
 
 class SyllabusAppTest < Minitest::Test
   def test_get
+    app.expects(:enrollment_terms).returns({
+      'Spring 2015' => '1234',
+      'Fall 2016' => '4567',
+    })
+
     login
     get '/'
+
     assert_equal 200, last_response.status
+    assert_match /Fall 2016/, last_response.body
+    assert_match /Spring 2015/, last_response.body
+  end
+
+  def test_get_unauthenticated
+    get '/'
+    assert_equal 302, last_response.status
+    follow_redirect!
+    assert_equal '/canvas-auth-login', last_request.path
+  end
+
+  def test_get_unauthorized
+    login({'user_roles' => ['StudentEnrollment']})
+    get '/'
+    assert_equal 302, last_response.status
+    follow_redirect!
+    assert_equal '/unauthorized', last_request.path
   end
 
   def test_get_view
     course_id = '1'
     syllabus_body = 'Body'
-    app.any_instance.expects(:canvas_api)
-                    .with(:get, "courses/#{course_id}?include[]=syllabus_body")
-                    .returns({'syllabus_body' => syllabus_body})
+    stub_request(:get, /courses\/#{course_id}\?access_token=.+&include\[\]=syllabus_body/)
+      .to_return(:body => {'syllabus_body' => syllabus_body}.to_json,
+                 :headers => {'Content-Type' => 'application/json'})
 
     login
     get "/view/#{course_id}"
@@ -21,13 +44,11 @@ class SyllabusAppTest < Minitest::Test
     assert_match /#{syllabus_body}/, last_response.body
   end
 
-
   def test_get_view_empty_syllabus
-    course_id = '1'
-    syllabus_body = ''
-    app.any_instance.expects(:canvas_api)
-                    .with(:get, "courses/#{course_id}?include[]=syllabus_body")
-                    .returns({'syllabus_body' => syllabus_body})
+    course_id = '2'
+    stub_request(:get, /courses\/#{course_id}\?access_token=.+&include\[\]=syllabus_body/)
+      .to_return(:body => {'syllabus_body' => ''}.to_json,
+                 :headers => {'Content-Type' => 'application/json'})
 
     login
     get "/view/#{course_id}"
@@ -36,9 +57,24 @@ class SyllabusAppTest < Minitest::Test
     assert_match /Syllabus missing or empty/, last_response.body
   end
 
+  def test_get_view_unauthenticated
+    get '/view/1'
+    assert_equal 302, last_response.status
+    follow_redirect!
+    assert_equal '/canvas-auth-login', last_request.path
+  end
+
+  def test_get_view_unauthorized
+    login({'user_roles' => ['StudentEnrollment']})
+    get '/view/1'
+    assert_equal 302, last_response.status
+    follow_redirect!
+    assert_equal '/unauthorized', last_request.path
+  end
+
   def test_post_export
     export_ids = ['1', '2', '3']
-    worker_params = {'export_ids' => export_ids, 'user_email' => 'test@gmail.com'}
+    worker_params = {'export_ids' => export_ids, 'user_email' => 'test@example.com'}
     Resque.expects(:enqueue).with(SyllabusWorker, worker_params)
 
     login
@@ -53,6 +89,7 @@ class SyllabusAppTest < Minitest::Test
       {"id":126,"name":'Course 4'}
     ]
 
+    app.expects(:enrollment_terms).returns({})
     app.any_instance.expects(:canvas_data).returns(courses)
 
     login
@@ -62,5 +99,20 @@ class SyllabusAppTest < Minitest::Test
     courses.each do |course|
       assert_match /#{course['name']}/, last_response.body
     end
+  end
+
+  def test_post_unauthenticated
+    post '/'
+    assert_equal 302, last_response.status
+    follow_redirect!
+    assert_equal '/canvas-auth-login', last_request.path
+  end
+
+  def test_post_unauthorized
+    login({'user_roles' => ['StudentEnrollment']})
+    post '/'
+    assert_equal 302, last_response.status
+    follow_redirect!
+    assert_equal '/unauthorized', last_request.path
   end
 end

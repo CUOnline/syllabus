@@ -1,20 +1,19 @@
 require 'bundler/setup'
 require 'wolf_core'
-require 'wolf_core/auth'
-require './syllabus_worker'
+
+require_relative './syllabus_worker'
 
 class SyllabusApp < WolfCore::App
-  set :root, File.dirname(__FILE__)
-  set :views, ["#{root}/views", settings.base_views]
-
   set :title, 'Syllabus Exporter'
+  set :root, File.dirname(__FILE__)
+  set :auth_paths, [/.*/]
 
   get '/' do
     slim :index
   end
 
   get '/view/:id' do
-    course = canvas_api(:get, "courses/#{params['id']}?include[]=syllabus_body")
+    course = canvas_api.get("courses/#{params['id']}?include[]=syllabus_body").body
 
     if course['syllabus_body'].nil? || course['syllabus_body'].empty?
       return 'Syllabus missing or empty'
@@ -25,7 +24,7 @@ class SyllabusApp < WolfCore::App
 
   post '/' do
     query_string = %{
-      SELECT distinct id, name, code
+      SELECT distinct id, canvas_id, name, code
       FROM course_dim
       WHERE code LIKE ?
         AND name LIKE ?

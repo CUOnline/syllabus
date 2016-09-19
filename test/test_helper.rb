@@ -6,6 +6,7 @@ require 'minitest/autorun'
 require 'minitest/rg'
 require 'mocha/mini_test'
 require 'rack/test'
+require 'webmock/minitest'
 require 'zip'
 
 # Turn on SSL for all requests
@@ -26,11 +27,18 @@ class Minitest::Test
     SyllabusApp
   end
 
+  def setup
+    WebMock.enable!
+    WebMock.reset!
+    WebMock.disable_net_connect!(allow_localhost: true)
+    app.settings.stubs(:api_cache).returns(false)
+  end
+
   def login(session_params = {})
     defaults = {
       'user_id' => '123',
       'user_roles' => ['AccountAdmin'],
-      'user_email' => 'test@gmail.com'
+      'user_email' => 'test@example.com'
     }
 
     env 'rack.session', defaults.merge(session_params)
