@@ -1,33 +1,21 @@
-h3 {
-  display: inline;
+#header {
+  padding: 0px 10px;
 }
 
-hr {
-  margin: 10px;
+#result-count {
+  margin-top: 10px;
 }
 
-label {
-  margin: 0px 10px;
+.btn-cu {
+  background-color: #ceb87c;
+  border-color: black;
+  display:inline;
+  margin: 5px;
 }
 
-ul {
-  margin-bottom: 0 !important;
-}
-
-#email-info {
-  margin: 10px 20px;
-}
-
-#export-button {
-  margin: 0 0 10px 30px;
-}
-
-.course-info, .course-info > a {
-  margin-left:28px;
-}
-
-.export-checkbox {
-  margin-right: 10px !important;
+.btn-cu:hover {
+  background-color: #b8a162;
+  border-color: black;
 }
 
 .float-right {
@@ -36,4 +24,50 @@ ul {
 
 .form-group {
   margin: 0 1%;
+}
+
+h2 {
+  margin-top: 10px;
+}
+
+h3 {
+  display: inline;
+}
+
+hr {
+  margin: 10px 0px;
+}
+
+label {
+  margin: 0px 10px;
+}
+
+table {
+  margin-top: 10px;
+  width: 100%;
+}
+
+tr {
+  width: 100%;
+}
+
+tr:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+td {
+  border-bottom: 1px solid #d6d6d6;
+  border-top: 1px solid #d6d6d6;
+  padding: 5px;
+}
+
+th {
+  border-bottom: 1px solid #b3b3b3;
+  font-family: "OpenSansBold", Helvetica, Arial, sans-serif;
+  font-weight: 900;
+  padding-bottom: 3.5px;
 }

@@ -6,19 +6,28 @@ div
       - if @results.any?
         input#select-all [type='checkbox']
         label [for='select-all'] Select All
-        input#export-button [type='submit' value='Export Selected']
-      div [class=('float-right' if @results.any?)] #{@results.count} results
+        input[class='btn btn-sm btn-cu' type='submit' value='Export Selected']
+      span#result-count [class=('float-right' if @results.any?)] #{@results.count} results
 
-    ul.list-group
+    table
+      tr
+        th Select
+        th Course Name
+        th Course Code
+        th Canvas ID
+        th View Syllabus
+
       - @results.each do |result|
-        li.list-group-item
-          input.export-checkbox [name='export_ids[]' value='#{result["id"]}'
-                                 type='checkbox']
-          h3 #{result["name"]}
-
-          br
-
-          span.course-info
+        tr
+          td
+            input.export-checkbox [name='export_ids[]' value='#{result["id"]}' type='checkbox']
+          td
+            a [href='#{settings.canvas_url}/courses/#{result["canvas_id"]}' target='_blank']
+              = result["name"]
+          td
             = result['code']
-            br
-            a [href='#{mount_point}/view/#{ result["id"] }' target='_blank'] View Syllabus
+          td
+            = result['canvas_id']
+          td
+            a [href='#{mount_point}/view/#{result["canvas_id"]}' target='_blank']
+              | View Syllabus

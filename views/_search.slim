@@ -1,3 +1,18 @@
+div#header
+  h2 Syllabus Exporter
+  a [href='#{settings.canvas_url}' target='_blank'] #{settings.canvas_url}
+  p
+    - if session['user_email']
+      | Report will be sent to #{session['user_email']}
+    - else
+      | Unable to retreive email address for sending report. Try updating your contact email
+      a [href='https://ucdenver.instructure.com/profile/settings'] here
+      | , then logging in again
+
+    a.float-right [href="#{mount_point}/canvas-auth-logout"] Log Out
+
+hr
+
 div.row
   form.form-inline [action="#{mount_point}" method='POST']
 
@@ -21,15 +36,6 @@ div.row
                   id == params['enrollment-term'])] #{ name }
 
     div.form-group
-      input [type='submit']
+      input [class='btn btn-sm btn-cu' type='submit']
 
-  hr
-
-  div#email-info
-    - if session['user_email']
-      | Report will be sent to #{session['user_email']}
-    - else
-      | Unable to retreive email address for sending report. Try updating your contact email 
-      a [href='https://ucdenver.instructure.com/profile/settings'] here
-      | , then logging in again
-    a.float-right [href="#{mount_point}/logout"] Log Out
+hr
