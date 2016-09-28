@@ -23,6 +23,10 @@ class SyllabusApp < WolfCore::App
   end
 
   post '/' do
+    session['department'] = params['department']
+    session['search-term'] = params['search-term']
+    session['enrollment-term'] = params['enrollment-term']
+
     query_string = %{
       SELECT distinct id, canvas_id, name, code
       FROM course_dim

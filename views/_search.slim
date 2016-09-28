@@ -7,23 +7,22 @@ div.row
     div.form-group
       label [for='search-term'] Search Term
       input [class='form-control' type='text' name='search-term'
-             id='search-term' value="#{params['search-term']}"]
+             id='search-term' value="#{session['search-term']}"]
 
     div.form-group
       label [for='department'] Department
       select [id='department' name='department']
         - settings.departments.each do |department|
           option [value="#{ department }" selected=("selected" if\
-                  department == params['department'])] #{ department }
+                  department == session['department'])] #{ department }
 
     div.form-group
       label [for='enrollment-term'] Term
       select [id='enrollment-term' name='enrollment-term']
         - settings.enrollment_terms.each do |id, name|
           option [value='#{ id }' selected=('selected' if\
-                  id == params['enrollment-term'])] #{ name }
+                  id == session['enrollment-term'])] #{ name }
 
     div.form-group
       input [class='btn btn-sm btn-cu' type='submit']
-
 hr
