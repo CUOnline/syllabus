@@ -7,7 +7,16 @@ div
       - if @results.any?
         input#select-all [type='checkbox']
         label [for='select-all'] Select All
+
+        input#hide-missing [type='checkbox' checked]
+        label [for='hide-missing'] Hide Missing Syllabi
+
         input[class='btn btn-sm btn-cu' type='submit' value='Export Selected']
+
+      div#loading
+        | Filtering Data &nbsp;&nbsp;
+        span class='glyphicon glyphicon-refresh'
+
       span#result-count [class=('float-right' if @results.any?)] #{@results.count} results
 
     table
@@ -19,7 +28,7 @@ div
         th View Syllabus
 
       - @results.each do |result|
-        tr
+        tr [class='result-row' id='#{result["canvas_id"]}']
           td
             input.export-checkbox [name='export_ids[]' value='#{result["id"]}' type='checkbox']
           td
@@ -29,6 +38,6 @@ div
             = result['code']
           td
             = result['canvas_id']
-          td
+          td [class='view-link']
             a [href='#{mount_point}/view/#{result["canvas_id"]}' target='_blank']
               | View Syllabus
