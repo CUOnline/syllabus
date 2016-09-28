@@ -32,19 +32,24 @@ class SyllabusApp < WolfCore::App
         AND enrollment_term_id = ?; }
 
     @results = canvas_data(query_string,
-                          "%#{params['department']}%",
-                          "%#{params['search-term']}%",
-                          shard_id(params['enrollment-term']))
+                           "%#{params['department']}%",
+                           "%#{params['search-term']}%",
+                           shard_id(params['enrollment-term']))
 
     slim :results
   end
 
-
   post '/export' do
-    Resque.enqueue(SyllabusWorker, {
-      'export_ids' => params['export_ids'],
-      'user_email' => session['user_email']
-    })
+    if !params['export_ids']
+      flash[:danger] = 'You must select at least one non-empty syllabus to export'
+    else
+      Resque.enqueue(SyllabusWorker, {
+        'export_ids' => params['export_ids'],
+        'user_email' => session['user_email']
+      })
+      flash[:success] = 'Syllabi are being collected and will be emailed to you when complete.'
+    end
+
     redirect to('/')
   end
 

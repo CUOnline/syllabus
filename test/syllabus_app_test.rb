@@ -79,6 +79,27 @@ class SyllabusAppTest < Minitest::Test
 
     login
     post '/export', {'export_ids' => export_ids}
+
+    assert_equal 302, last_response.status
+    assert_match /Syllabi are being collected/,
+                 last_request.env['rack.session']['flash'][:success]
+
+    follow_redirect!
+    assert_equal '/', last_request.path
+    assert_equal 200, last_response.status
+  end
+
+  def test_post_export_without_ids
+    login
+    post '/export'
+
+    assert_equal 302, last_response.status
+    assert_match /You must select at least one/,
+                 last_request.env['rack.session']['flash'][:danger]
+
+    follow_redirect!
+    assert_equal '/', last_request.path
+    assert_equal 200, last_response.status
   end
 
   def test_post

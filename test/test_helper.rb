@@ -32,6 +32,7 @@ class Minitest::Test
     WebMock.reset!
     WebMock.disable_net_connect!(allow_localhost: true)
     app.settings.stubs(:api_cache).returns(false)
+    app.stubs(:enrollment_terms).returns({})
   end
 
   def login(session_params = {})
