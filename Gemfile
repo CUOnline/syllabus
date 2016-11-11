@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem 'wolf_core', :git => 'https://github.com/CUOnline/wolf_core', :ref => '03ef85650'
+gem 'wolf_core', :git => 'https://github.com/CUOnline/wolf_core', :tag => 'v0.1.0'
 gem "rubyzip", '~> 1.1', :require=>'zip'
 
 group :test, :development do
